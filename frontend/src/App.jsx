@@ -1,34 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [message, setMessage] = useState('Chargement...')
+  const [status, setStatus] = useState('')
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    // Appel à l'API Flask au chargement du composant
+    fetch('http://localhost:5000/api/hello')
+      .then(response => response.json())
+      .then(data => {
+        setMessage(data.message)
+        setStatus(data.status)
+      })
+      .catch(err => {
+        setError('Erreur: Le serveur Flask ne semble pas actif. Assurez-vous qu\'il est lancé sur le port 5000!')
+        console.error(err)
+      })
+  }, [])
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="card">
+      <h1>🎉 Gestion de Librairie</h1>
+      
+      <div style={{ marginTop: '20px', padding: '20px', border: '2px solid #61dafb', borderRadius: '8px' }}>
+        <h2>{message}</h2>
+        <p style={{ fontSize: '18px', color: 'green' }}>{status}</p>
+        
+        {error && (
+          <p style={{ fontSize: '16px', color: 'red', marginTop: '20px' }}>
+            ⚠️ {error}
+          </p>
+        )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+
+      <div style={{ marginTop: '30px', textAlign: 'left', fontSize: '14px' }}>
+        <h3>✅ Prochaines étapes:</h3>
+        <ul>
+          <li>Modifier <code>backend/app.py</code> pour ajouter de nouvelles routes</li>
+          <li>Modifier <code>frontend/src/App.jsx</code> pour créer l'interface</li>
+          <li>Lire la documentation dans <code>README.md</code></li>
+        </ul>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
