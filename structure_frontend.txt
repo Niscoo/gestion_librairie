@@ -1,0 +1,58 @@
+frontend/
+│
+├── public/
+│
+├── src/
+│   │
+│   ├── assets/                # Images, icones, fonts
+│   │
+│   ├── app/                   # Configuration globale de l'app
+│   │   ├── App.jsx
+│   │   ├── routes.jsx
+│   │   └── store.js
+│   │
+│   ├── pages/                 # Pages principales (1 page = 1 membre)
+│   │   ├── Home/
+│   │   ├── Books/
+│   │   ├── BookDetails/
+│   │   ├── Auth/
+│   │   └── Admin/
+│   │
+│   ├── components/            # Composants réutilisables
+│   │   ├── UI/
+│   │   │   ├── Button.jsx
+│   │   │   ├── Input.jsx
+│   │   │   └── Modal.jsx
+│   │   │
+│   │   ├── Layout/
+│   │   │   ├── Navbar.jsx
+│   │   │   └── Footer.jsx
+│   │   │
+│   │   └── Book/
+│   │       ├── BookCard.jsx
+│   │       └── Rating.jsx
+│   │
+│   ├── services/              # Appels API
+│   │   ├── api.js
+│   │   ├── authService.js
+│   │   ├── bookService.js
+│   │   └── alertService.js
+│   │
+│   ├── hooks/                 # Custom hooks
+│   │   ├── useAuth.js
+│   │   └── useFetch.js
+│   │
+│   ├── context/               # Context API (si utilisé)
+│   │   └── AuthContext.jsx
+│   │
+│   ├── utils/                 # Fonctions helpers
+│   │   └── formatDate.js
+│   │
+│   ├── styles/                # CSS globaux
+│   │   └── global.css
+│   │
+│   ├── main.jsx
+│   │
+├── .env
+├── package.json
+├── vite.config.js
