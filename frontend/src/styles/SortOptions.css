@@ -1,0 +1,62 @@
+.sort-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-options label {
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+.sort-select {
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: #333;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.3s;
+  min-width: 200px;
+}
+
+.sort-select:hover {
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+@media (max-width: 768px) {
+  .sort-options {
+    width: 100%;
+  }
+
+  .sort-select {
+    flex: 1;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .sort-options {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .sort-options label {
+    font-size: 0.9rem;
+  }
+
+  .sort-select {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+}
