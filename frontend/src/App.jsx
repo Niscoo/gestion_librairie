@@ -22,6 +22,7 @@ function App() {
 
   return (
     <div className="card">
+      <h1>🎉 Salut c'est Dina</h1>
       <h1>🎉 Gestion de Librairie</h1>
       
       <div style={{ marginTop: '20px', padding: '20px', border: '2px solid #61dafb', borderRadius: '8px' }}>
