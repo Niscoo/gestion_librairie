@@ -1,0 +1,257 @@
+/* Checkout Page Styles */
+
+.checkout-page {
+  min-height: calc(100vh - 120px);
+  background: linear-gradient(135deg, #f5f7fa 0%, #f8fafc 100%);
+  padding: 40px 20px;
+}
+
+.checkout-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.checkout-form {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.08);
+}
+
+.checkout-form h1 {
+  font-size: 2rem;
+  color: #2d3748;
+  margin: 0 0 32px 0;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+/* Order Summary */
+.checkout-summary {
+  position: sticky;
+  top: 120px;
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.08);
+  height: fit-content;
+}
+
+.checkout-summary h2 {
+  font-size: 1.3rem;
+  color: #2d3748;
+  margin: 0 0 24px 0;
+  font-weight: 700;
+}
+
+.summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.summary-items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.summary-items::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.summary-items::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+.summary-items::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border-left: 4px solid #667eea;
+}
+
+.item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.summary-item h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2d3748;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-format {
+  font-size: 0.85rem;
+  color: #667eea;
+  font-weight: 500;
+  margin: 0 0 2px 0;
+}
+
+.item-qty {
+  font-size: 0.85rem;
+  color: #718096;
+  margin: 0;
+}
+
+.item-price {
+  font-weight: 700;
+  color: #2d3748;
+  min-width: 60px;
+  text-align: right;
+}
+
+.summary-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 16px 0;
+}
+
+.summary-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  color: #4a5568;
+}
+
+.total-row span:last-child {
+  font-weight: 600;
+}
+
+.total-row.total {
+  font-size: 1.2rem;
+  color: #2d3748;
+  font-weight: 800;
+  padding-top: 8px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.total-row.total span:first-child {
+  font-weight: 700;
+}
+
+.total-row.total span:last-child {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.3rem;
+}
+
+/* Empty Cart State */
+.checkout-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  padding: 40px 20px;
+}
+
+.empty-state {
+  text-align: center;
+  background: white;
+  padding: 60px 40px;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.08);
+  max-width: 400px;
+}
+
+.empty-state h2 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin: 0 0 12px 0;
+  font-weight: 800;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  color: #718096;
+  margin: 0 0 24px 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .checkout-summary {
+    position: static;
+  }
+
+  .checkout-form {
+    padding: 24px;
+  }
+
+  .checkout-form h1 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .checkout-page {
+    padding: 20px 16px;
+  }
+
+  .checkout-form {
+    padding: 16px;
+  }
+
+  .checkout-summary {
+    padding: 16px;
+  }
+
+  .checkout-form h1 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+
+  .checkout-summary h2 {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+
+  .summary-item {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .item-price {
+    text-align: left;
+  }
+
+  .empty-state {
+    padding: 40px 24px;
+  }
+
+  .empty-state h2 {
+    font-size: 1.4rem;
+  }
+}
