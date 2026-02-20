@@ -1,13 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/FilterPanel.css';
 
-function FilterPanel({ onFilterChange, onReset }) {
-  const [filters, setFilters] = useState({
+function FilterPanel({ onFilterChange, onReset, filters: parentFilters, priceBounds = [0, 100] }) {
+  const [filters, setFilters] = useState(parentFilters || {
     format: [],
     availability: null,
     category: [],
-    priceRange: [0, 50]
+    priceRange: parentFilters && parentFilters.priceRange ? parentFilters.priceRange : priceBounds
   });
+
+  // Sync local filters when parentFilters or priceBounds change
+  useEffect(() => {
+    if (parentFilters) {
+      setFilters(parentFilters);
+    } else {
+      setFilters({
+        format: [],
+        availability: null,
+        category: [],
+        priceRange: priceBounds
+      });
+    }
+  }, [parentFilters, priceBounds]);
 
   const [expanded, setExpanded] = useState({
     format: true,
@@ -16,7 +30,11 @@ function FilterPanel({ onFilterChange, onReset }) {
     price: true
   });
 
-  const formats = ['papier', 'ebook', 'occasion'];
+  const formats = [
+    { value: 'ebook', label: 'E-book' },
+    { value: 'papier-neuf', label: 'Livre Neuf' },
+    { value: 'papier-occasion', label: 'Livre d\'Occasion' }
+  ];
   const categories = ['Fantasy', 'Science-Fiction', 'Dystopie', 'Classique', 'Non-Fiction', 'Développement Personnel', 'Informatique', 'Contes'];
 
   const toggleFormat = (format) => {
@@ -59,14 +77,14 @@ function FilterPanel({ onFilterChange, onReset }) {
       format: [],
       availability: null,
       category: [],
-      priceRange: [0, 50]
+      priceRange: priceBounds
     };
     setFilters(resetFilters);
     onFilterChange(resetFilters);
     onReset();
   };
 
-  const hasActiveFilters = filters.format.length > 0 || filters.availability !== null || filters.category.length > 0 || filters.priceRange[1] < 50;
+  const hasActiveFilters = filters.format.length > 0 || filters.availability !== null || filters.category.length > 0 || filters.priceRange[1] < priceBounds[1];
 
   return (
     <div className="filter-panel">
@@ -91,13 +109,13 @@ function FilterPanel({ onFilterChange, onReset }) {
         {expanded.format && (
           <div className="filter-options">
             {formats.map(format => (
-              <label key={format} className="filter-checkbox">
+              <label key={format.value} className="filter-checkbox">
                 <input
                   type="checkbox"
-                  checked={filters.format.includes(format)}
-                  onChange={() => toggleFormat(format)}
+                  checked={filters.format.includes(format.value)}
+                  onChange={() => toggleFormat(format.value)}
                 />
-                <span>{format.charAt(0).toUpperCase() + format.slice(1)}</span>
+                <span>{format.label}</span>
               </label>
             ))}
           </div>
@@ -172,13 +190,13 @@ function FilterPanel({ onFilterChange, onReset }) {
         {expanded.price && (
           <div className="price-filter">
             <div className="price-range">
-              <span>0€</span>
+              <span>{priceBounds[0]}€</span>
               <span>{filters.priceRange[1]}€</span>
             </div>
             <input
               type="range"
-              min="0"
-              max="50"
+              min={priceBounds[0]}
+              max={priceBounds[1]}
               value={filters.priceRange[1]}
               onChange={handlePriceChange}
               className="price-slider"

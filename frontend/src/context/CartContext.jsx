@@ -1,51 +1,82 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useReducer, useEffect } from 'react';
 
 const CartContext = createContext();
 
-export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
+const initialState = () => {
+  try {
+    const raw = localStorage.getItem('cart_items');
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error('Failed to parse cart from localStorage', e);
+    return [];
+  }
+};
 
-  const addToCart = (book) => {
-    setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === book.id);
-      if (existingItem) {
-        return prevItems.map(item =>
-          item.id === book.id
-            ? { ...item, quantity: item.quantity + 1 }
+function cartReducer(state, action) {
+  switch (action.type) {
+    case 'ADD': {
+      const book = action.payload;
+      const itemKey = `${book.id}-${book.format}`;
+      const existing = state.find(item => `${item.id}-${item.format}` === itemKey);
+      if (existing) {
+        return state.map(item =>
+          `${item.id}-${item.format}` === itemKey
+            ? { ...item, quantity: item.quantity + (book.quantity || 1) }
             : item
         );
       }
-      return [...prevItems, { ...book, quantity: 1 }];
-    });
-  };
-
-  const removeFromCart = (bookId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== bookId));
-  };
-
-  const updateQuantity = (bookId, quantity) => {
-    if (quantity <= 0) {
-      removeFromCart(bookId);
-      return;
+      return [...state, { ...book, quantity: book.quantity || 1 }];
     }
-    setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.id === bookId ? { ...item, quantity } : item
-      )
-    );
+    case 'REMOVE': {
+      const { bookId, format } = action.payload;
+      return state.filter(item => !(item.id === bookId && item.format === format));
+    }
+    case 'UPDATE_QUANTITY': {
+      const { bookId, format, quantity } = action.payload;
+      if (quantity <= 0) {
+        return state.filter(item => !(item.id === bookId && item.format === format));
+      }
+      return state.map(item =>
+        item.id === bookId && item.format === format ? { ...item, quantity } : item
+      );
+    }
+    case 'CLEAR':
+      return [];
+    default:
+      return state;
+  }
+}
+
+export function CartProvider({ children }) {
+  const [cartItems, dispatch] = useReducer(cartReducer, undefined, initialState);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('cart_items', JSON.stringify(cartItems));
+    } catch (e) {
+      console.error('Failed to save cart to localStorage', e);
+    }
+  }, [cartItems]);
+
+  const addToCart = (book) => {
+    dispatch({ type: 'ADD', payload: book });
+  };
+
+  const removeFromCart = (bookId, format) => {
+    dispatch({ type: 'REMOVE', payload: { bookId, format } });
+  };
+
+  const updateQuantity = (bookId, format, quantity) => {
+    dispatch({ type: 'UPDATE_QUANTITY', payload: { bookId, format, quantity } });
   };
 
   const clearCart = () => {
-    setCartItems([]);
+    dispatch({ type: 'CLEAR' });
   };
 
-  const getTotalItems = () => {
-    return cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  };
+  const getTotalItems = () => cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  const getTotalPrice = () => {
-    return cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  };
+  const getTotalPrice = () => cartItems.reduce((sum, item) => sum + ((item.price ?? 0) * (item.quantity ?? 0)), 0);
 
   return (
     <CartContext.Provider value={{

@@ -1,17 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import '../styles/CartPage.css';
 
 function CartPage() {
   const navigate = useNavigate();
   const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
+  const { addToast } = useToast();
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
-      alert('Votre panier est vide!');
+      addToast('Votre panier est vide!', 'info');
       return;
     }
-    alert('Passer à la caisse (À implémenter)');
+    navigate('/checkout');
   };
 
   const shippingCost = cartItems.length > 0 ? 5.99 : 0;
@@ -52,7 +54,7 @@ function CartPage() {
 
               <div className="cart-items-list">
                 {cartItems.map(item => (
-                  <div key={item.id} className="cart-item-detailed">
+                  <div key={`${item.id}-${item.format}`} className="cart-item-detailed">
                     <div className="item-image">
                       <img src={item.cover} alt={item.title} />
                     </div>
@@ -64,11 +66,11 @@ function CartPage() {
                           <p className="item-author">{item.author}</p>
                           <p className="item-category">{item.category}</p>
                         </div>
-                        <p className="item-format">{item.format.toUpperCase()}</p>
+                        <p className="item-format">{item.format}</p>
                       </div>
 
                       <div className="item-details">
-                        <span className="price">{item.price.toFixed(2)}€</span>
+                        <span className="price">{(item.price ?? 0).toFixed(2)}€</span>
                         <span className="rating">⭐ {item.rating}</span>
                       </div>
                     </div>
@@ -76,14 +78,14 @@ function CartPage() {
                     <div className="item-actions">
                       <div className="quantity-control">
                         <button 
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.id, item.format, item.quantity - 1)}
                           className="qty-btn"
                         >
                           −
                         </button>
                         <span className="qty-display">{item.quantity}</span>
                         <button 
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.id, item.format, item.quantity + 1)}
                           className="qty-btn"
                         >
                           +
@@ -92,12 +94,12 @@ function CartPage() {
 
                       <div className="subtotal">
                         <p className="label">Sous-total</p>
-                        <p className="amount">{(item.price * item.quantity).toFixed(2)}€</p>
+                        <p className="amount">{((item.price ?? 0) * item.quantity).toFixed(2)}€</p>
                       </div>
 
                       <button 
                         className="remove-item-btn"
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeFromCart(item.id, item.format)}
                         title="Supprimer"
                       >
                         🗑️

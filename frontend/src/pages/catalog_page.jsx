@@ -6,11 +6,13 @@ import FilterPanel from '../components/FilterPanel';
 import SortOptions from '../components/SortOptions';
 import { bookService } from '../services/bookService';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import '../styles/CatalogPage.css';
 
 function CatalogPage() {
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { addToast } = useToast();
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,16 +24,19 @@ function CatalogPage() {
     format: [],
     availability: null,
     category: [],
-    priceRange: [0, 50]
+    priceRange: [0, 100]
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [priceBounds, setPriceBounds] = useState([0, 100]);
 
   const ITEMS_PER_PAGE = 12;
 
+  // Charger les livres au montage
   useEffect(() => {
     loadBooks();
   }, []);
 
+  // Appliquer filtres et tri quand ils changent
   useEffect(() => {
     applyFiltersAndSort();
   }, [searchQuery, filters, sort, books]);
@@ -39,8 +44,11 @@ function CatalogPage() {
   const loadBooks = async () => {
     try {
       setLoading(true);
-      const data = await bookService.getBooks({}, sort);
+      const data = await bookService.getBooks({}, 'popular');
       setBooks(data);
+      const range = await bookService.getPriceRange();
+      setPriceBounds(range);
+      setFilters(prev => ({ ...prev, priceRange: range }));
     } catch (err) {
       setError('Erreur lors du chargement des livres');
       console.error(err);
@@ -51,55 +59,25 @@ function CatalogPage() {
 
   const applyFiltersAndSort = async () => {
     try {
-      let result = [...books];
+      // Appliquer les filtres du service sur les livres chargés
+      // (Ou charger directement avec les filtres - c'est plus simple)
+      const result = await bookService.getBooks(filters, sort);
 
+      // Appliquer la recherche
+      let searchFiltered = result;
       if (searchQuery.trim()) {
         const searchResults = await bookService.searchBooks(searchQuery);
-        result = result.filter(book => searchResults.find(b => b.id === book.id));
+        searchFiltered = result.filter(book => searchResults.find(b => b.id === book.id));
       }
 
-      if (filters.format.length > 0) {
-        result = result.filter(book => filters.format.includes(book.format));
-      }
-
-      if (filters.availability !== null) {
-        result = result.filter(book => book.available === filters.availability);
-      }
-
-      if (filters.category.length > 0) {
-        result = result.filter(book => filters.category.includes(book.category));
-      }
-
-      if (filters.priceRange) {
-        result = result.filter(book =>
-          book.price >= filters.priceRange[0] && book.price <= filters.priceRange[1]
-        );
-      }
-
-      result.sort((a, b) => {
-        switch (sort) {
-          case 'price-asc':
-            return a.price - b.price;
-          case 'price-desc':
-            return b.price - a.price;
-          case 'newest':
-            return b.isNew - a.isNew;
-          case 'rating':
-            return b.rating - a.rating;
-          case 'popular':
-          default:
-            return b.reviews - a.reviews;
-        }
-      });
-
-      setFilteredBooks(result);
+      setFilteredBooks(searchFiltered);
       setCurrentPage(1);
     } catch (err) {
-      console.error('Erreur lors de l\'application des filtres:', err);
+      console.error('Erreur lors du filtrage:', err);
     }
   };
 
-  const handleSearch = async (query) => {
+  const handleSearch = (query) => {
     setSearchQuery(query);
   };
 
@@ -116,7 +94,7 @@ function CatalogPage() {
       format: [],
       availability: null,
       category: [],
-      priceRange: [0, 50]
+      priceRange: priceBounds
     });
   };
 
@@ -127,9 +105,14 @@ function CatalogPage() {
   const handleAddToCart = (bookId) => {
     const book = books.find(b => b.id === bookId);
     if (book) {
-      addToCart(book);
-      // Optional: show feedback
-      alert(`✓ "${book.title}" ajouté au panier!`);
+      const availableFormats = (book.formats || []).filter(f => f.available);
+      if (availableFormats.length === 0) {
+        addToast(`Le livre "${book.title}" est indisponible.`, 'info');
+        return;
+      }
+      const chosen = [...availableFormats].sort((a, b) => a.price - b.price)[0];
+      addToCart({ ...book, format: chosen.type, price: chosen.price, quantity: 1 });
+      addToast(`✓ "${book.title}" (${chosen.type}) ajouté au panier!`, 'success');
     }
   };
 
@@ -138,7 +121,7 @@ function CatalogPage() {
   };
 
   const handleAlert = (bookId, email) => {
-    alert(`Alerte créée pour ${email} sur le livre ${bookId}`);
+    addToast(`Alerte créée pour ${email} sur le livre ${bookId}`, 'info');
   };
 
   const totalPages = Math.ceil(filteredBooks.length / ITEMS_PER_PAGE);
@@ -146,86 +129,48 @@ function CatalogPage() {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentBooks = filteredBooks.slice(startIndex, endIndex);
 
+  if (loading) {
+    return <div className="loading">Chargement des livres...</div>;
+  }
+
   if (error) {
-    return <div className="error-message">{error}</div>;
+    return <div className="error">{error}</div>;
   }
 
   return (
     <div className="catalog-page">
-      <div className="catalog-header">
-        <h1>📚 Catalogue</h1>
-        <p>Découvrez notre sélection de {books.length} livres</p>
-      </div>
-
-      <SearchBar onSearch={handleSearch} onClear={handleClearSearch} />
-
       <div className="catalog-container">
-        <aside className={`filter-sidebar ${showMobileFilters ? 'mobile-open' : ''}`}>
+        {/* Panneau latéral des filtres */}
+        <aside className={`filters-panel ${showMobileFilters ? 'open' : ''}`}>
           <FilterPanel
             onFilterChange={handleFilterChange}
             onReset={handleResetFilters}
+            filters={filters}
+            priceBounds={priceBounds}
           />
         </aside>
 
+        {/* Contenu principal */}
         <main className="catalog-main">
-          <button
-            className="mobile-filter-toggle"
-            onClick={() => setShowMobileFilters(!showMobileFilters)}
-          >
-            ☰ Filtres
-          </button>
-
-          <div className="catalog-toolbar">
-            <div className="results-info">
-              {loading ? (
-                <span>Chargement...</span>
-              ) : (
-                <span>
-                  <strong>{filteredBooks.length}</strong> résultats
-                  {searchQuery && ` pour "${searchQuery}"`}
-                </span>
-              )}
+          {/* Barre de titre et recherche */}
+          <div className="catalog-header">
+            <h1>📚 Catalogue</h1>
+            <div className="header-controls">
+              <SearchBar onSearch={handleSearch} onClear={handleClearSearch} />
+              <SortOptions onSortChange={handleSortChange} currentSort={sort} />
+              <button
+                className="mobile-filters-btn"
+                onClick={() => setShowMobileFilters(!showMobileFilters)}
+              >
+                ⚙️ Filtres
+              </button>
             </div>
-            <SortOptions onSortChange={handleSortChange} currentSort={sort} />
           </div>
 
-          {!searchQuery && filteredBooks.length > 0 && currentPage === 1 && (
-            <div className="featured-section">
-              <div className="featured-box bestsellers">
-                <h3>🏆 Bestsellers</h3>
-                <div className="featured-books">
-                  {books
-                    .filter(book => book.isBestseller)
-                    .slice(0, 4)
-                    .map(book => (
-                      <div key={book.id} className="featured-item" onClick={() => handleViewDetails(book.id)}>
-                        <img src={book.cover} alt={book.title} />
-                      </div>
-                    ))}
-                </div>
-              </div>
-
-              <div className="featured-box new-arrivals">
-                <h3>✨ Nouveautés</h3>
-                <div className="featured-books">
-                  {books
-                    .filter(book => book.isNew)
-                    .slice(0, 4)
-                    .map(book => (
-                      <div key={book.id} className="featured-item" onClick={() => handleViewDetails(book.id)}>
-                        <img src={book.cover} alt={book.title} />
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {loading ? (
-            <div className="loading">Chargement des livres...</div>
-          ) : filteredBooks.length === 0 ? (
+          {/* Résultats */}
+          {filteredBooks.length === 0 ? (
             <div className="no-results">
-              <p>😞 Aucun livre ne correspond à vos critères</p>
+              <p>Aucun livre ne correspond à vos critères de recherche.</p>
               <button
                 className="btn btn-primary"
                 onClick={handleResetFilters}

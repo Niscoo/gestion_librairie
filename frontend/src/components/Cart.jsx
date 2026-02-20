@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import '../styles/Cart.css';
 
 function Cart() {
+  const navigate = useNavigate();
   const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -42,25 +44,26 @@ function Cart() {
             <>
               <div className="cart-items">
                 {cartItems.map(item => (
-                  <div key={item.id} className="cart-item">
+                  <div key={`${item.id}-${item.format}`} className="cart-item">
                     <img src={item.cover} alt={item.title} className="item-cover" />
                     
                     <div className="item-details">
                       <h3>{item.title}</h3>
                       <p className="author">{item.author}</p>
-                      <p className="price">{item.price.toFixed(2)}€</p>
+                      <p className="format-tag">{item.format}</p>
+                      <p className="price">{(item.price ?? 0).toFixed(2)}€</p>
                     </div>
 
                     <div className="item-quantity">
                       <button 
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => updateQuantity(item.id, item.format, item.quantity - 1)}
                         className="qty-btn"
                       >
                         −
                       </button>
                       <span className="qty-value">{item.quantity}</span>
                       <button 
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() => updateQuantity(item.id, item.format, item.quantity + 1)}
                         className="qty-btn"
                       >
                         +
@@ -68,12 +71,12 @@ function Cart() {
                     </div>
 
                     <div className="item-subtotal">
-                      {(item.price * item.quantity).toFixed(2)}€
+                      {((item.price ?? 0) * item.quantity).toFixed(2)}€
                     </div>
 
                     <button 
                       className="remove-btn"
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => removeFromCart(item.id, item.format)}
                       title="Supprimer"
                     >
                       🗑️
@@ -92,7 +95,7 @@ function Cart() {
                   <button 
                     className="btn-checkout"
                     onClick={() => {
-                      alert('Passer la commande (À implémenter)');
+                      navigate('/cart');
                       setIsOpen(false);
                     }}
                   >

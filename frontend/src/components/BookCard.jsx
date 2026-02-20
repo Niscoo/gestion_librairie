@@ -27,12 +27,12 @@ function BookCard({ book, onAddToCart, onViewDetails, onAlert }) {
       <div className="book-cover">
         <img src={book.cover} alt={book.title} />
         <div className="book-overlay">
-          {book.available ? (
+          {book.formats.some(f => f.available) ? (
             <span className="in-stock">En stock</span>
           ) : (
             <span className="out-of-stock">Rupture</span>
           )}
-          <span className="format-badge">{book.format.toUpperCase()}</span>
+          <span className="format-badge">MULTI-FORMAT</span>
         </div>
       </div>
 
@@ -53,9 +53,9 @@ function BookCard({ book, onAddToCart, onViewDetails, onAlert }) {
         </div>
 
         <div className="book-price">
-          <span className="price">{book.price.toFixed(2)}€</span>
-          {book.stock > 0 && book.stock <= 5 && (
-            <span className="low-stock">Seulement {book.stock} en stock</span>
+          <span className="price">À partir de {Math.min(...book.formats.map(f => f.price)).toFixed(2)}€</span>
+          {book.formats.some(f => f.available && f.stock > 0 && f.stock <= 5) && (
+            <span className="low-stock">Stock limité</span>
           )}
         </div>
 
@@ -67,15 +67,15 @@ function BookCard({ book, onAddToCart, onViewDetails, onAlert }) {
             Voir détails
           </button>
           <button
-            className={`btn btn-secondary ${!book.available ? 'disabled' : ''}`}
+            className={`btn btn-secondary ${!book.formats.some(f => f.available) ? 'disabled' : ''}`}
             onClick={() => onAddToCart(book.id)}
-            disabled={!book.available}
+            disabled={!book.formats.some(f => f.available)}
           >
-            {book.available ? 'Ajouter au panier' : 'Indisponible'}
+            {book.formats.some(f => f.available) ? 'Ajouter au panier' : 'Indisponible'}
           </button>
         </div>
 
-        {!book.available && (
+        {!book.formats.some(f => f.available) && (
           <>
             <button
               className="btn-alert"
