@@ -56,7 +56,7 @@ function ProductDetailsPage() {
   useEffect(() => {
     const fetchBook = async () => {
       const books = await bookService.getBooks();
-      const foundBook = books.find(b => b.id === parseInt(id));
+      const foundBook = books.find(b => b.id === id);
       if (foundBook) {
         setBook(foundBook);
         // Set first available format as default
