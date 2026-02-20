@@ -11,6 +11,7 @@ import EbookLiseuse from './pages/ebook_liseuse'
 
 function App() {
   return (
+<<<<<<< HEAD
     <Router>
       <div className="app-container">
         <nav className="navbar">
@@ -23,6 +24,22 @@ function App() {
             <li><Link to="/ebook">Lecteur E-book</Link></li>
           </ul>
         </nav>
+=======
+    <div className="card">
+      <h1>🎉 Salut c'est Dina</h1>
+      <h1>🎉 Gestion de Librairie</h1>
+      
+      <div style={{ marginTop: '20px', padding: '20px', border: '2px solid #61dafb', borderRadius: '8px' }}>
+        <h2>{message}</h2>
+        <p style={{ fontSize: '18px', color: 'green' }}>{status}</p>
+        
+        {error && (
+          <p style={{ fontSize: '16px', color: 'red', marginTop: '20px' }}>
+            ⚠️ {error}
+          </p>
+        )}
+      </div>
+>>>>>>> origin/Dina
 
         <main className="main-content">
           <Routes>
