@@ -9,7 +9,7 @@
   text-align: center;
   margin-bottom: 40px;
   padding: 60px 40px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   color: white;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
@@ -34,7 +34,7 @@
   grid-template-columns: 260px 1fr;
   gap: 40px;
   padding: 40px;
-  background: white;
+  background: var(--bg-primary);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
@@ -71,7 +71,7 @@
 .mobile-filter-toggle {
   display: none;
   padding: 12px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -100,12 +100,12 @@
 
 .results-info {
   font-size: 1rem;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .results-info strong {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 800;
@@ -130,7 +130,7 @@
 .featured-box h3 {
   margin: 0 0 18px 0;
   font-size: 1.3rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
@@ -174,7 +174,7 @@
   text-align: center;
   padding: 80px 40px;
   font-size: 1.2rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .error-message {
@@ -195,7 +195,7 @@
 .no-results p {
   font-size: 1.4rem;
   margin-bottom: 24px;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -213,7 +213,7 @@
 
 .pagination-btn {
   padding: 12px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -240,7 +240,7 @@
 }
 
 .pagination-info {
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 700;
   font-size: 1.05rem;
 }

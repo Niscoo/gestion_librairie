@@ -10,7 +10,7 @@
   text-align: center;
   padding: 100px 40px;
   font-size: 1.2rem;
-  color: #666;
+  color: var(--text-secondary);
   background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f5 100%);
   border-radius: 12px;
   border: 2px dashed #e0e0e0;
@@ -27,7 +27,7 @@
 .not-found h1 {
   margin: 0;
   font-size: 2rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 800;
 }
 
@@ -38,7 +38,7 @@
   gap: 10px;
   margin-bottom: 40px;
   font-size: 0.95rem;
-  color: #999;
+  color: var(--text-secondary);
   flex-wrap: wrap;
   padding: 16px 0;
   border-bottom: 1px solid #e8e8e8;
@@ -48,7 +48,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #667eea;
+  color: var(--color-orange-dark);
   text-decoration: none;
   transition: all 0.3s;
   font-family: inherit;
@@ -58,7 +58,7 @@
 }
 
 .breadcrumb button:hover {
-  color: #764ba2;
+  color: var(--color-orange-light);
   background: rgba(102, 126, 234, 0.1);
 }
 
@@ -141,18 +141,18 @@
   transform: translateX(-50%);
   padding: 10px 18px;
   background: rgba(255, 255, 255, 0.95);
-  border: 2px solid #667eea;
+  border: 2px solid var(--color-orange-dark);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 700;
   transition: all 0.3s;
   backdrop-filter: blur(8px);
-  color: #667eea;
+  color: var(--color-orange-dark);
 }
 
 .btn-excerpt:hover {
-  background: #667eea;
+  background: var(--color-orange-dark);
   color: white;
   transform: translateX(-50%) translateY(-2px);
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
@@ -167,7 +167,7 @@
 
 .breadcrumb-title {
   font-size: 0.85rem;
-  color: #667eea;
+  color: var(--color-orange-dark);
   text-transform: uppercase;
   letter-spacing: 2px;
   font-weight: 800;
@@ -176,7 +176,7 @@
 .book-title {
   font-size: 2.6rem;
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -1px;
@@ -185,12 +185,12 @@
 .book-series {
   margin: 0;
   font-size: 1.05rem;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .series-link {
-  color: #667eea;
+  color: var(--color-orange-dark);
   cursor: pointer;
   text-decoration: underline;
   transition: all 0.3s;
@@ -198,14 +198,14 @@
 }
 
 .series-link:hover {
-  color: #764ba2;
+  color: var(--color-orange-light);
 }
 
 .book-author {
   margin: 0;
   font-size: 1.4rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -233,12 +233,12 @@
 
 .rating-value {
   font-weight: 800;
-  color: #333;
+  color: var(--text-primary);
   font-size: 1.1rem;
 }
 
 .reviews-count {
-  color: #bbb;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -251,7 +251,7 @@
 .format-section h3 {
   margin: 0 0 16px 0;
   font-size: 1.05rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -266,7 +266,7 @@
 .format-btn {
   padding: 14px 12px;
   border: 2px solid #e8e8e8;
-  background: white;
+  background: var(--bg-primary);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
@@ -279,13 +279,13 @@
 }
 
 .format-btn:hover:not(.disabled) {
-  border-color: #667eea;
+  border-color: var(--color-orange-dark);
   background: rgba(102, 126, 234, 0.05);
   transform: translateY(-2px);
 }
 
 .format-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   color: white;
   border-color: transparent;
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
@@ -305,7 +305,7 @@
 .format-price {
   font-size: 1.15rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -323,13 +323,13 @@
   padding: 24px;
   background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f5 100%);
   border-radius: 10px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid var(--color-orange-dark);
 }
 
 .description-section h3 {
   margin: 0 0 16px 0;
   font-size: 1.05rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -352,7 +352,7 @@
 .btn-read-more {
   background: none;
   border: none;
-  color: #667eea;
+  color: var(--color-orange-dark);
   cursor: pointer;
   font-weight: 700;
   text-decoration: none;
@@ -362,7 +362,7 @@
 }
 
 .btn-read-more:hover {
-  color: #764ba2;
+  color: var(--color-orange-light);
   text-decoration: underline;
 }
 
@@ -390,7 +390,7 @@
 .current-price {
   font-size: 2.8rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -1px;
@@ -445,7 +445,7 @@
   margin-bottom: 10px;
   font-size: 0.9rem;
   font-weight: 800;
-  color: #333;
+  color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -464,17 +464,17 @@
   width: 40px;
   height: 40px;
   border: none;
-  background: white;
+  background: var(--bg-primary);
   cursor: pointer;
   font-size: 1.2rem;
-  color: #667eea;
+  color: var(--color-orange-dark);
   border-radius: 8px;
   transition: all 0.2s;
   font-weight: 700;
 }
 
 .qty-btn:hover {
-  background: #667eea;
+  background: var(--color-orange-dark);
   color: white;
   transform: scale(1.1);
 }
@@ -486,7 +486,7 @@
   text-align: center;
   font-size: 1rem;
   font-weight: 800;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .qty-input:focus {
@@ -497,7 +497,7 @@
 .btn-add-to-cart {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -528,9 +528,9 @@
 .btn-wishlist {
   width: 100%;
   padding: 14px;
-  background: white;
-  color: #667eea;
-  border: 2px solid #667eea;
+  background: var(--bg-primary);
+  color: var(--color-orange-dark);
+  border: 2px solid var(--color-orange-dark);
   border-radius: 10px;
   font-size: 1rem;
   font-weight: 700;
@@ -540,7 +540,7 @@
 }
 
 .btn-wishlist:hover {
-  background: #667eea;
+  background: var(--color-orange-dark);
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
@@ -555,7 +555,7 @@
 /* Purchase Info */
 .purchase-info {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
   padding-top: 16px;
   border-top: 1px solid #e8e8e8;
 }
@@ -574,7 +574,7 @@
 
 .librarian-card {
   background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f5 100%);
-  border-left: 4px solid #667eea;
+  border-left: 4px solid var(--color-orange-dark);
   padding: 32px;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(102, 126, 234, 0.08);
@@ -598,7 +598,7 @@
 .librarian-info h3 {
   margin: 0 0 4px 0;
   font-size: 1rem;
-  color: #667eea;
+  color: var(--color-orange-dark);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -607,7 +607,7 @@
 .librarian-name {
   margin: 0;
   font-size: 0.95rem;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
@@ -629,7 +629,7 @@
 .technical-details-section h2 {
   margin: 0 0 28px 0;
   font-size: 1.6rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 800;
 }
 
@@ -665,14 +665,14 @@
 
 .detail-label {
   font-weight: 700;
-  color: #333;
+  color: var(--text-primary);
   font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .detail-value {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.95rem;
   font-weight: 500;
 }
@@ -712,7 +712,7 @@
 .author-content h2 {
   margin: 0 0 8px 0;
   font-size: 1.6rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 800;
 }
 
@@ -720,7 +720,7 @@
   margin: 0 0 18px 0;
   font-size: 1.25rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -734,7 +734,7 @@
 
 .btn-author-books {
   padding: 14px 28px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -759,7 +759,7 @@
 .reviews-section h2 {
   margin: 0 0 28px 0;
   font-size: 1.6rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 800;
 }
 
@@ -770,7 +770,7 @@
   border-radius: 12px;
   padding: 60px 30px;
   text-align: center;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .related-books-placeholder p,
@@ -782,7 +782,7 @@
 
 .text-small {
   font-size: 0.85rem;
-  color: #bbb;
+  color: var(--text-secondary);
   margin-top: 10px;
   font-weight: 500;
 }

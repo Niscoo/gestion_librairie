@@ -15,7 +15,7 @@
 }
 
 .checkout-form {
-  background: white;
+  background: var(--bg-primary);
   padding: 40px;
   border-radius: 16px;
   box-shadow: 0 6px 24px rgba(102, 126, 234, 0.08);
@@ -33,7 +33,7 @@
 .checkout-summary {
   position: sticky;
   top: 120px;
-  background: white;
+  background: var(--bg-primary);
   padding: 28px;
   border-radius: 16px;
   box-shadow: 0 6px 24px rgba(102, 126, 234, 0.08);
@@ -82,7 +82,7 @@
   padding: 12px;
   border-radius: 8px;
   background: #f8fafc;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid var(--color-orange-dark);
 }
 
 .item-info {
@@ -102,7 +102,7 @@
 
 .item-format {
   font-size: 0.85rem;
-  color: #667eea;
+  color: var(--color-orange-dark);
   font-weight: 500;
   margin: 0 0 2px 0;
 }
@@ -157,7 +157,7 @@
 }
 
 .total-row.total span:last-child {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -175,7 +175,7 @@
 
 .empty-state {
   text-align: center;
-  background: white;
+  background: var(--bg-primary);
   padding: 60px 40px;
   border-radius: 16px;
   box-shadow: 0 6px 24px rgba(102, 126, 234, 0.08);

@@ -6,17 +6,17 @@
 
 .sort-options label {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   white-space: nowrap;
 }
 
 .sort-select {
   padding: 8px 12px;
-  background: white;
+  background: var(--bg-primary);
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--text-primary);
   cursor: pointer;
   font-family: inherit;
   transition: all 0.3s;
@@ -24,13 +24,13 @@
 }
 
 .sort-select:hover {
-  border-color: #667eea;
+  border-color: var(--color-orange-dark);
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
 }
 
 .sort-select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-orange-dark);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
