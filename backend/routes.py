@@ -37,6 +37,42 @@ def create_payment_intent(id):
         return jsonify({'error': f"Erreur Stripe: {str(e)}"}), 500
 
 
+@api.route('/commandes/<int:id>/create-checkout-session', methods=['POST'])
+def create_checkout_session(id):
+    """Crée une session Stripe Checkout et renvoie l'URL de redirection."""
+    try:
+        commande = Commande.query.get(id)
+        if not commande:
+            return jsonify({'error': 'Commande non trouvée'}), 404
+        # Construire les line_items à partir des lignes de commande
+        line_items = []
+        for l in commande.lignes:
+            line_items.append({
+                'price_data': {
+                    'currency': 'eur',
+                    'product_data': {'name': l.titre},
+                    'unit_amount': int((l.prix_unitaire or 0) * 100)
+                },
+                'quantity': int(l.quantite or 1)
+            })
+
+        # frontend URL — ajuster si nécessaire via la configuration d'environnement
+        FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=line_items,
+            mode='payment',
+            success_url=f"{FRONTEND_URL}/order-confirmation/{commande.numCommande}?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{FRONTEND_URL}/checkout",
+            metadata={'commande_id': str(commande.numCommande)}
+        )
+        return jsonify({'url': session.url}), 200
+    except Exception as e:
+        current_app.logger.error(f"Stripe create_checkout_session error: {e}")
+        return jsonify({'error': f"Erreur Stripe: {str(e)}"}), 500
+
+
 @api.route('/webhook/stripe', methods=['POST'])
 def stripe_webhook():
     """Endpoint webhook Stripe — vérifie la signature si configurée et traite les événements importants."""

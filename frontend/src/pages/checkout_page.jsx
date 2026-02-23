@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
 import { useToast } from '../context/ToastContext';
 import orderService from '../services/orderService';
+import { API_BASE_URL } from '../config/api';
 import GuestCheckoutForm from '../components/GuestCheckoutForm';
 import UserCheckoutForm from '../components/UserCheckoutForm';
 import '../styles/CheckoutPage.css';
@@ -14,6 +15,7 @@ export default function CheckoutPage() {
   const { user, isConnected } = useUser();
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasPhysicalBooks, setHasPhysicalBooks] = useState(false);
 
   // Check if cart has physical books
@@ -40,6 +42,7 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (formData) => {
     setLoading(true);
+    setIsSubmitting(true);
     try {
       // Prepare items for order
       const items = cartItems.map(item => ({
@@ -75,25 +78,71 @@ export default function CheckoutPage() {
       addToast(`Commande créée avec succès! Numéro: ${result.id}`, 'success');
       clearCart();
       
-      // Redirect to order confirmation
-      navigate(`/order-confirmation/${result.id}`);
+      // Create Stripe Checkout Session and redirect
+      try {
+        const resp = await fetch(`${API_BASE_URL}/api/commandes/${result.id}/create-checkout-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          addToast(err.error || 'Erreur création session de paiement', 'error');
+          navigate(`/order-confirmation/${result.id}`);
+          return;
+        }
+        const data = await resp.json();
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      } catch (e) {
+        addToast('Erreur lors de la redirection au paiement', 'error');
+        navigate(`/order-confirmation/${result.id}`);
+        return;
+      }
     } catch (error) {
       addToast(error.message || 'Erreur lors de la création de la commande', 'error');
     } finally {
       setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price ?? 0) * item.quantity, 0);
   const shippingCost = hasPhysicalBooks ? 5.99 : 0;
   const total = subtotal + shippingCost;
+  const currentStep = isSubmitting ? 3 : 2;
+
 
   return (
     <div className="checkout-page">
+      <div className="checkout-progress">
+        <div className="step active">
+          <div className="step-number">1</div>
+          <span>Panier</span>
+        </div>
+        <div className="step-line"></div>
+        <div className={`step ${currentStep >= 2 ? 'active' : ''}`}>
+          <div className="step-number">2</div>
+          <span>Coordonnées</span>
+        </div>
+        <div className="step-line"></div>
+        <div className={`step ${currentStep >= 3 ? 'active' : ''}`}>
+          <div className="step-number">3</div>
+          <span>Confirmation</span>
+        </div>
+      </div>
+
       <div className="checkout-container">
         {/* Left: Form */}
         <div className="checkout-form">
           <h1>Passer la commande</h1>
+          {!isConnected && (
+            <div className="guest-checkout-info">
+              <h2>Commande invité</h2>
+              <p>Vous pouvez commander sans créer de compte. Vos informations servent uniquement au suivi de commande.</p>
+            </div>
+          )}
           
           {isConnected && user ? (
             <UserCheckoutForm 
