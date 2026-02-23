@@ -19,6 +19,10 @@ api = Blueprint('api', __name__)
 def create_payment_intent(id):
     """Crée un PaymentIntent Stripe pour la commande et renvoie client_secret au frontend."""
     try:
+        if not stripe.api_key:
+            current_app.logger.error("Stripe secret key not configured (STRIPE_SECRET_KEY)")
+            return jsonify({'error': 'Stripe secret key not configured (STRIPE_SECRET_KEY)'}), 500
+
         commande = Commande.query.get(id)
         if not commande:
             return jsonify({'error': 'Commande non trouvée'}), 404
@@ -41,17 +45,25 @@ def create_payment_intent(id):
 def create_checkout_session(id):
     """Crée une session Stripe Checkout et renvoie l'URL de redirection."""
     try:
+        if not stripe.api_key:
+            current_app.logger.error("Stripe secret key not configured (STRIPE_SECRET_KEY)")
+            return jsonify({'error': 'Stripe secret key not configured (STRIPE_SECRET_KEY)'}), 500
+
         commande = Commande.query.get(id)
         if not commande:
             return jsonify({'error': 'Commande non trouvée'}), 404
         # Construire les line_items à partir des lignes de commande
         line_items = []
         for l in commande.lignes:
+            unit_amount = int((l.prix_unitaire or 0) * 100)
+            # Stripe n'accepte pas des unit_amount négatifs; vérifier
+            if unit_amount < 0:
+                unit_amount = 0
             line_items.append({
                 'price_data': {
                     'currency': 'eur',
                     'product_data': {'name': l.titre},
-                    'unit_amount': int((l.prix_unitaire or 0) * 100)
+                    'unit_amount': unit_amount
                 },
                 'quantity': int(l.quantite or 1)
             })

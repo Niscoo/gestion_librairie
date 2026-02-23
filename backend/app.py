@@ -1,9 +1,15 @@
 from flask import Flask
 from flask_cors import CORS
 from models import db
-from routes import api
 import logging
 import os
+
+# Charger les variables d'environnement depuis le fichier .env si présent
+from dotenv import load_dotenv
+load_dotenv()
+
+# Importer routes après le chargement des variables d'environnement
+from routes import api
 
 app = Flask(__name__)
 
@@ -19,12 +25,13 @@ app.config['DEBUG'] = DEBUG
 # Configuration CORS restrictive - uniquement le frontend local
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:5173", "http://localhost:3000"],
+        # Allow frontend origins during development; allow all origins to avoid CORS issues
+        "origins": "*",
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
+        "allow_headers": ["Content-Type", "Authorization", "X-User-Id"],
         "expose_headers": ["Content-Type"],
         "max_age": 3600,
-        "supports_credentials": False
+        "supports_credentials": True
     }
 })
 
@@ -46,6 +53,30 @@ with app.app_context():
     try:
         db.create_all()
         logger.info("✓ Base de données initialisée")
+        # Migration : ajouter les nouvelles colonnes si elles n'existent pas
+        from sqlalchemy import text
+        new_columns = [
+            "ALTER TABLE commande ADD COLUMN subtotal FLOAT DEFAULT 0",
+            "ALTER TABLE commande ADD COLUMN shipping_cost FLOAT DEFAULT 0",
+            "ALTER TABLE commande ADD COLUMN shipping_rue TEXT",
+            "ALTER TABLE commande ADD COLUMN shipping_code_postal TEXT",
+            "ALTER TABLE commande ADD COLUMN shipping_ville TEXT",
+            "ALTER TABLE commande ADD COLUMN shipping_pays TEXT",
+            "ALTER TABLE commande ADD COLUMN guest_email TEXT",
+            "ALTER TABLE commande ADD COLUMN guest_nom TEXT",
+            "ALTER TABLE commande ADD COLUMN guest_prenom TEXT",
+            "ALTER TABLE commande ADD COLUMN guest_telephone TEXT",
+            "ALTER TABLE utilisateur ADD COLUMN email_verified BOOLEAN DEFAULT 0",
+            "ALTER TABLE utilisateur ADD COLUMN verification_code TEXT",
+            "ALTER TABLE utilisateur ADD COLUMN verification_code_expires DATETIME",
+            "ALTER TABLE utilisateur ADD COLUMN role TEXT DEFAULT 'user'",
+        ]
+        for sql in new_columns:
+            try:
+                db.session.execute(text(sql))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
     except Exception as e:
         logger.error(f"✗ Erreur lors de l'initialisation de la base de données: {e}")
 
