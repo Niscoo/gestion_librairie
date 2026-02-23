@@ -9,7 +9,7 @@ import GuestCheckoutForm from '../components/GuestCheckoutForm';
 import UserCheckoutForm from '../components/UserCheckoutForm';
 import '../styles/CheckoutPage.css';
 
-export default function CheckoutPage() {
+function CheckoutPage() {
   const navigate = useNavigate();
   const { cartItems, clearCart } = useCart();
   const { user, isConnected } = useUser();
@@ -209,3 +209,5 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+export default CheckoutPage;
