@@ -5,8 +5,86 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import random
 import string
+import os
+import stripe
+
+# Configure Stripe via environment variables (set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET)
+stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET')
 
 api = Blueprint('api', __name__)
+
+# Stripe payment endpoints
+@api.route('/commandes/<int:id>/create-payment-intent', methods=['POST'])
+def create_payment_intent(id):
+    """Crée un PaymentIntent Stripe pour la commande et renvoie client_secret au frontend."""
+    try:
+        commande = Commande.query.get(id)
+        if not commande:
+            return jsonify({'error': 'Commande non trouvée'}), 404
+        if not commande.can_transition_to('payée'):
+            return jsonify({'error': f"Paiement non autorisé depuis l'état actuel: {commande.status}"}), 400
+        amount = int(round((commande.montantTotal or 0) * 100))
+        intent = stripe.PaymentIntent.create(
+            amount=amount,
+            currency='eur',
+            metadata={'commande_id': str(commande.numCommande)},
+            automatic_payment_methods={'enabled': True}
+        )
+        return jsonify({'client_secret': intent.client_secret, 'amount': amount}), 200
+    except Exception as e:
+        current_app.logger.error(f"Stripe create_payment_intent error: {e}")
+        return jsonify({'error': f"Erreur Stripe: {str(e)}"}), 500
+
+
+@api.route('/webhook/stripe', methods=['POST'])
+def stripe_webhook():
+    """Endpoint webhook Stripe — vérifie la signature si configurée et traite les événements importants."""
+    payload = request.data
+    sig_header = request.headers.get('Stripe-Signature')
+    event = None
+    try:
+        if STRIPE_WEBHOOK_SECRET:
+            event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+        else:
+            # Fallback: construire l'événement directement (moins sûr) — utile en dev si pas de secret
+            event = stripe.Event.construct_from(request.get_json(force=True), stripe.api_key)
+    except ValueError as e:
+        return jsonify({'error': 'Invalid payload'}), 400
+    except stripe.error.SignatureVerificationError as e:
+        return jsonify({'error': 'Invalid signature'}), 400
+
+    try:
+        etype = event['type']
+        # payment succeeded
+        if etype == 'payment_intent.succeeded':
+            intent = event['data']['object']
+            commande_id = (intent.get('metadata') or {}).get('commande_id')
+            if commande_id:
+                commande = Commande.query.get(int(commande_id))
+                if commande and commande.can_transition_to('payée'):
+                    commande.transition_to('payée')
+                    try:
+                        if commande.has_physical_items() and commande.can_transition_to('en préparation'):
+                            commande.transition_to('en préparation')
+                        elif commande.can_transition_to("accès ebook activé"):
+                            commande.transition_to("accès ebook activé")
+                    except Exception:
+                        pass
+        # payment failed
+        elif etype == 'payment_intent.payment_failed':
+            intent = event['data']['object']
+            commande_id = (intent.get('metadata') or {}).get('commande_id')
+            if commande_id:
+                commande = Commande.query.get(int(commande_id))
+                if commande and commande.can_transition_to('annulée'):
+                    commande.transition_to('annulée')
+    except Exception as e:
+        current_app.logger.error(f"Error handling Stripe webhook: {e}")
+        db.session.rollback()
+        return jsonify({'error': 'Webhook handling error'}), 500
+
+    return jsonify({'received': True}), 200
 
 # --- VALIDATION HELPERS ---
 
