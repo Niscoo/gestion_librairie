@@ -29,6 +29,10 @@ def create_payment_intent(id):
         if not commande.can_transition_to('payée'):
             return jsonify({'error': f"Paiement non autorisé depuis l'état actuel: {commande.status}"}), 400
         amount = int(round((commande.montantTotal or 0) * 100))
+        # Stripe requires a positive amount (in cents). Guard against zero/negative totals.
+        if amount <= 0:
+            current_app.logger.error(f"Invalid amount for commande {id}: {amount}")
+            return jsonify({'error': 'Montant invalide ou nul pour la commande'}), 400
         intent = stripe.PaymentIntent.create(
             amount=amount,
             currency='eur',
@@ -70,6 +74,12 @@ def create_checkout_session(id):
 
         # frontend URL — ajuster si nécessaire via la configuration d'environnement
         FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
+
+        # Vérifier que le montant total des line_items est positif (Stripe n'accepte pas un total nul)
+        total_amount = sum((li['price_data'].get('unit_amount', 0) * li.get('quantity', 1)) for li in line_items)
+        if total_amount <= 0:
+            current_app.logger.error(f"Invalid total amount for checkout session, commande {id}: {total_amount}")
+            return jsonify({'error': 'Montant total invalide pour la commande'}), 400
 
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
