@@ -85,6 +85,24 @@ def create_checkout_session(id):
         return jsonify({'error': f"Erreur Stripe: {str(e)}"}), 500
 
 
+@api.route('/config/stripe', methods=['GET'])
+def stripe_config():
+    """Retourne la clé publique Stripe à utiliser côté client (si configurée)."""
+    candidates = [
+        'VITE_STRIPE_PUBLISHABLE_KEY',
+        'STRIPE_PUBLISHABLE_KEY',
+        'STRIPE_PUBLIC_KEY',
+        'STRIPE_PUB_KEY',
+        'STRIPE_PUBLISHABLE'
+    ]
+    for k in candidates:
+        v = os.environ.get(k)
+        if v:
+            return jsonify({'publishableKey': v}), 200
+    # pas d'erreur 500 ici pour permettre au frontend d'afficher un message plus clair
+    return jsonify({'publishableKey': None, 'warning': 'No publishable key found. Set STRIPE_PUBLISHABLE_KEY or VITE_STRIPE_PUBLISHABLE_KEY'}), 200
+
+
 @api.route('/webhook/stripe', methods=['POST'])
 def stripe_webhook():
     """Endpoint webhook Stripe — vérifie la signature si configurée et traite les événements importants."""

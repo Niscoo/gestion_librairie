@@ -78,23 +78,10 @@ function CheckoutPage() {
       addToast(`Commande créée avec succès! Numéro: ${result.id}`, 'success');
       clearCart();
       
-      // Create Stripe Checkout Session and redirect
+      // Redirect to internal payment page (PaymentElement)
       try {
-        const resp = await fetch(`${API_BASE_URL}/api/commandes/${result.id}/create-checkout-session`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
-        });
-        if (!resp.ok) {
-          const err = await resp.json().catch(() => ({}));
-          addToast(err.error || 'Erreur création session de paiement', 'error');
-          navigate(`/order-confirmation/${result.id}`);
-          return;
-        }
-        const data = await resp.json();
-        if (data.url) {
-          window.location.href = data.url;
-          return;
-        }
+        navigate(`/paiement/${result.id}`);
+        return;
       } catch (e) {
         addToast('Erreur lors de la redirection au paiement', 'error');
         navigate(`/order-confirmation/${result.id}`);
