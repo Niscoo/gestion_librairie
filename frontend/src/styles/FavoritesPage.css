@@ -1,0 +1,211 @@
+/* ─────────────────────────────────────
+   Favorites Page
+───────────────────────────────────── */
+
+.favorites-page {
+  width: 100%;
+}
+
+.favorites-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.favorites-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.favorites-subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.favorites-count {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ── Loading ── */
+.favorites-loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ── Empty state ── */
+.favorites-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+.favorites-empty-icon {
+  font-size: 3.5rem;
+  color: var(--border-color);
+  line-height: 1;
+}
+
+.favorites-empty h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+}
+
+.favorites-empty p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.btn-go-catalog {
+  margin-top: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  background: var(--color-orange-dark);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.btn-go-catalog:hover { opacity: 0.88; transform: translateY(-1px); }
+
+/* ── Grid ── */
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ── Card ── */
+.fav-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+
+.fav-card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.fav-card-cover {
+  position: relative;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-secondary);
+}
+
+.fav-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.fav-card:hover .fav-card-cover img { transform: scale(1.05); }
+
+.fav-remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  color: var(--color-orange-dark);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  transition: transform 0.15s, background 0.15s;
+}
+.fav-remove-btn:hover { transform: scale(1.15); background: #fff0e8; }
+
+/* ── Info ── */
+.fav-card-info {
+  padding: 0.75rem 0.9rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fav-title {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
+}
+.fav-title:hover { color: var(--color-orange-dark); }
+
+.fav-author {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.fav-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.fav-price {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--color-orange-dark);
+  white-space: nowrap;
+}
+
+.fav-cart-btn {
+  padding: 0.35rem 0.65rem;
+  background: var(--color-orange-dark);
+  color: white;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.fav-cart-btn:hover:not(.disabled) { opacity: 0.85; }
+.fav-cart-btn.disabled {
+  background: var(--border-color);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}

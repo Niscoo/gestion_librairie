@@ -1,0 +1,219 @@
+/* ─────────────────────────────────────
+   Order Detail Page
+───────────────────────────────────── */
+
+.od-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 0 3rem;
+  width: 100%;
+}
+
+/* Loading / Error */
+.od-loading,
+.od-error {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Back button */
+.od-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 0;
+  margin-bottom: 1rem;
+  transition: color 0.15s;
+}
+.od-btn-back:hover { color: var(--color-orange-dark); }
+
+/* Header */
+.od-header {
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 1.75rem;
+}
+
+.od-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.od-title-row h1 {
+  margin: 0;
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.4px;
+}
+
+.od-title-row h1 span {
+  color: var(--color-orange-dark);
+}
+
+.od-date {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Status badge */
+.od-status {
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-green { background: rgba(76,175,80,.12); color: #2e7d32; }
+.status-blue  { background: rgba(33,150,243,.12); color: #1565c0; }
+.status-gray  { background: rgba(100,100,100,.1); color: var(--text-secondary); }
+.status-red   { background: rgba(244,67,54,.1);   color: #c62828; }
+
+/* Body layout */
+.od-body {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 680px) {
+  .od-body { grid-template-columns: 1fr; }
+}
+
+/* Cards */
+.od-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.25rem 1.4rem;
+}
+
+.od-card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.od-card h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.od-card p {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* Items */
+.od-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.od-item-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.od-item-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+.od-item-info { flex: 1; }
+
+.od-item-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.15rem;
+}
+
+.od-item-format,
+.od-item-isbn {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.od-item-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  white-space: nowrap;
+}
+
+.od-item-qty {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.od-item-price {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  min-width: 70px;
+  text-align: right;
+}
+
+/* Totaux */
+.od-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  border-top: 2px solid var(--border-color);
+  padding-top: 0.85rem;
+}
+
+.od-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.od-total-final {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-orange-dark);
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.25rem;
+}
+
+/* Sidebar */
+.od-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.od-addr-name {
+  font-weight: 700;
+}

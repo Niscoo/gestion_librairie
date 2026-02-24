@@ -18,6 +18,7 @@ function CartPage() {
 
   const shippingCost = cartItems.length > 0 ? 5.99 : 0;
   const totalTTC = getTotalPrice() + shippingCost;
+  const suggestedCategories = [...new Set(cartItems.map(item => item.category).filter(Boolean))].slice(0, 3);
 
   return (
     <div className="cart-page">
@@ -186,9 +187,16 @@ function CartPage() {
       {cartItems.length > 0 && (
         <div className="recommendations-section">
           <h2>📚 Vous aimerez aussi</h2>
-          <div className="recommendations-placeholder">
-            <p>Recommandations personnalisées basées sur votre panier</p>
-            <p className="text-small">(À intégrer avec l'API)</p>
+          <div className="recommendations-list">
+            {(suggestedCategories.length ? suggestedCategories : ['Classiques', 'Roman', 'Développement personnel']).map((category) => (
+              <article key={category} className="recommendation-card">
+                <h3>{category}</h3>
+                <p>Découvrez plus de titres liés à vos préférences actuelles.</p>
+                <button className="btn btn-outline" onClick={() => navigate('/catalog')}>
+                  Explorer cette catégorie
+                </button>
+              </article>
+            ))}
           </div>
         </div>
       )}

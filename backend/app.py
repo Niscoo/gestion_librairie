@@ -4,9 +4,11 @@ from models import db
 import logging
 import os
 
-# Charger les variables d'environnement depuis le fichier .env si présent
+# Charger les variables d'environnement depuis le fichier .env du dossier backend si présent
 from dotenv import load_dotenv
-load_dotenv()
+# Charger explicitement le .env situé dans le même dossier que app.py
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 # Importer routes après le chargement des variables d'environnement
 from routes import api

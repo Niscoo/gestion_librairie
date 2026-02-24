@@ -15,13 +15,13 @@
   gap: 24px;
   margin-bottom: 40px;
   padding-bottom: 24px;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .back-btn {
   padding: 10px 18px;
-  background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
-  border: 1px solid #d0d0d0;
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.95rem;
@@ -32,7 +32,7 @@
 }
 
 .back-btn:hover {
-  background: linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 100%);
+  background: var(--border-color);
   border-color: var(--text-secondary);
   transform: translateX(-2px);
 }
@@ -61,9 +61,9 @@
   justify-content: center;
   text-align: center;
   padding: 120px 40px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f5 100%);
+  background: var(--bg-secondary);
   border-radius: 16px;
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed var(--border-color);
 }
 
 .empty-icon {
@@ -103,7 +103,7 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 18px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .section-header h2 {
@@ -125,8 +125,8 @@
   gap: 24px;
   align-items: center;
   padding: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
-  border: 1px solid #e8e8e8;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
 }
@@ -234,7 +234,7 @@
   align-items: center;
   gap: 8px;
   background: var(--bg-primary);
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   padding: 4px;
   transition: all 0.3s;
@@ -259,7 +259,7 @@
 }
 
 .quantity-control .qty-btn:hover {
-  background: #f0f0f0;
+  background: var(--border-color);
   transform: scale(1.15);
 }
 
@@ -316,8 +316,8 @@
 }
 
 .summary-card {
-  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
-  border: 1px solid #e8e8e8;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
@@ -361,14 +361,14 @@
 
 .summary-divider {
   height: 1px;
-  background: linear-gradient(90deg, #e8e8e8 0%, transparent 100%);
+  background: var(--border-color);
   margin: 16px 0;
 }
 
 .promo-card,
 .info-card {
-  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
-  border: 1px solid #e8e8e8;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -390,7 +390,7 @@
 .promo-input {
   flex: 1;
   padding: 11px 14px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.95rem;
   font-family: inherit;
@@ -439,35 +439,6 @@
   font-weight: 500;
 }
 
-/* Buttons */
-.btn {
-  padding: 14px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
-  display: inline-block;
-  text-align: center;
-  letter-spacing: 0.5px;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
 .btn-outline {
   background: var(--bg-primary);
   color: var(--color-orange-dark);
@@ -495,7 +466,7 @@
 
 /* Recommendations Section */
 .recommendations-section {
-  border-top: 2px solid #e0e0e0;
+  border-top: 2px solid var(--border-color);
   padding-top: 50px;
   margin-top: 50px;
 }
@@ -507,25 +478,34 @@
   font-weight: 800;
 }
 
-.recommendations-placeholder {
-  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f5 100%);
-  border: 2px dashed #ddd;
+.recommendations-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.recommendation-card {
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 50px 24px;
-  text-align: center;
-  color: var(--text-secondary);
+  padding: 16px;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.recommendations-placeholder p {
+.recommendation-card h3 {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
 }
 
-.text-small {
-  font-size: 0.85rem;
-  color: #ccc;
-  margin-top: 10px;
-  font-weight: 500;
+.recommendation-card p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.recommendation-card .btn {
+  margin-top: auto;
 }
 
 /* Responsive */
@@ -673,4 +653,3 @@
     font-size: 1rem;
   }
 }
-

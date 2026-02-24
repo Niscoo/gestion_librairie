@@ -6,4 +6,6 @@ export const API_ENDPOINTS = {
   authors: `${API_BASE_URL}/api/auteurs`,
   orders: `${API_BASE_URL}/api/commandes`,
   users: `${API_BASE_URL}/api/utilisateurs`,
+  avis: `${API_BASE_URL}/api/avis`,
+  avisStats: `${API_BASE_URL}/api/avis/stats`,
 };

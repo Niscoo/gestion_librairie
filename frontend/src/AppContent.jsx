@@ -21,6 +21,7 @@ import { ThemeContext } from './context/ThemeContext'
 import { useUser } from './context/UserContext'
 import { useFavorites } from './context/FavoritesContext'
 
+
 function AppShell() {
   const { isDark, toggleTheme } = useContext(ThemeContext)
   const { user, isConnected, logout } = useUser()
@@ -80,11 +81,11 @@ function AppShell() {
                     Catalogue
                   </NavLink>
                 </li>
-                <li>
+                {/* <li>
                   <NavLink to="/cart" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>
                     Panier
                   </NavLink>
-                </li>
+                </li> */}
               </>
             )}
           </ul>

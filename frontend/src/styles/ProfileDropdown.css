@@ -1,0 +1,128 @@
+/* ─────────────────────────────────────
+   Profile Dropdown
+───────────────────────────────────── */
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 240px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.16);
+  z-index: 3000;
+  overflow: hidden;
+  animation: pd-appear 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes pd-appear {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Header ── */
+.pd-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.85rem;
+}
+
+.pd-avatar-lg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-orange-dark);
+  color: white;
+  font-size: 0.88rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pd-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  overflow: hidden;
+}
+
+.pd-name {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pd-email {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Divider ── */
+.pd-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0.3rem 0;
+}
+
+/* ── Menu items ── */
+.pd-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.62rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: left;
+  transition: background 0.12s;
+}
+
+.pd-item:hover { background: var(--bg-secondary); }
+
+.pd-item-icon {
+  width: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  flex-shrink: 0;
+}
+
+.pd-item:hover .pd-item-icon { color: var(--color-orange-dark); }
+
+.pd-item-label { flex: 1; }
+
+.pd-badge {
+  background: var(--color-orange-dark);
+  color: white;
+  border-radius: 999px;
+  min-width: 18px;
+  height: 18px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Logout (danger) ── */
+.pd-item-logout { color: #e53935; }
+.pd-item-logout:hover { background: rgba(229, 57, 53, 0.07); }
+.pd-item-logout .pd-item-icon { color: #e53935; }

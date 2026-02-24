@@ -10,18 +10,23 @@ const orderService = {
    */
   createOrder: async (items, userData, shippingAddress) => {
     try {
+      // Calculate shipping cost (5.99 if physical books)
+      const hasPhysical = items.some(i => i.format === 'papier-neuf' || i.format === 'papier-occasion');
+      const shipping_cost = hasPhysical ? 5.99 : 0;
+
       const payload = {
         items,
-        shipping_address: shippingAddress
+        shipping_address: shippingAddress,
+        shipping_cost,
       };
 
       if (userData?.id) {
         payload.user_id = userData.id;
-      } else {
+      } else if (userData?.guestInfo) {
         payload.guest_info = userData.guestInfo;
       }
 
-      const response = await fetch(`${API_BASE}/orders`, {
+      const response = await fetch(`${API_BASE}/commandes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -46,7 +51,7 @@ const orderService = {
    */
   getOrder: async (orderId) => {
     try {
-      const response = await fetch(`${API_BASE}/orders/${orderId}`);
+      const response = await fetch(`${API_BASE}/commandes/${orderId}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch order');
@@ -59,14 +64,9 @@ const orderService = {
     }
   },
 
-  /**
-   * Get user's order history
-   * @param {number} userId
-   * @returns {Promise<Array>} List of orders
-   */
   getUserOrders: async (userId) => {
     try {
-      const response = await fetch(`${API_BASE}/orders?user_id=${userId}`);
+      const response = await fetch(`${API_BASE}/commandes?user_id=${userId}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch orders');

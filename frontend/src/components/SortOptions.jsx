@@ -2,11 +2,11 @@ import '../styles/SortOptions.css';
 
 function SortOptions({ onSortChange, currentSort }) {
   const sortOptions = [
-    { value: 'popular', label: '📈 Popularité' },
-    { value: 'newest', label: '✨ Nouveautés' },
-    { value: 'price-asc', label: '💰 Prix: croissant' },
-    { value: 'price-desc', label: '💰 Prix: décroissant' },
-    { value: 'rating', label: '⭐ Note moyenne' }
+    { value: 'popular', label: 'Popularité' },
+    { value: 'newest', label: 'Nouveautés' },
+    { value: 'price-asc', label: 'Prix: croissant' },
+    { value: 'price-desc', label: 'Prix: décroissant' },
+    { value: 'rating', label: 'Note moyenne' }
   ];
 
   return (

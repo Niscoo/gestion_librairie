@@ -2,16 +2,29 @@ import { API_ENDPOINTS } from '../config/api.js';
 
 // Service pour récupérer et filtrer les livres depuis l'API backend
 export const bookService = {
+  // Récupérer les stats d'avis (moyenne + nombre) pour tous les livres
+  fetchAvisStats: async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.avisStats);
+      if (!response.ok) return {};
+      const result = await response.json();
+      return result.data || {};
+    } catch {
+      return {};
+    }
+  },
+
   // Convertir les données du backend au format frontend
-  transformBackendBook: (backendBook) => {
+  transformBackendBook: (backendBook, avisStats = {}) => {
+    const stats = avisStats[backendBook.isbn];
     return {
       id: backendBook.isbn,
       title: backendBook.titre,
       author: backendBook.auteur,
       cover: `https://covers.openlibrary.org/b/isbn/${backendBook.isbn}-M.jpg`,
-      rating: 4.5,
-      reviews: 0,
-      category: 'Général',
+      rating: stats ? stats.moyenne : 0,
+      reviews: stats ? stats.total : 0,
+      category: backendBook.categorie || 'Général',
       isNew: false,
       isBestseller: false,
       description: backendBook.resume || 'Aucune description disponible',
@@ -29,12 +42,15 @@ export const bookService = {
   // Récupérer tous les livres depuis l'API
   getBooks: async (filters = {}, sort = 'popular') => {
     try {
-      const response = await fetch(API_ENDPOINTS.books);
+      const [response, avisStats] = await Promise.all([
+        fetch(API_ENDPOINTS.books),
+        bookService.fetchAvisStats()
+      ]);
       if (!response.ok) throw new Error('Erreur lors de la récupération des livres');
 
       const result = await response.json();
-      const backendBooks = result.data || result; // Support both paginated and direct responses
-      let filtered = backendBooks.map(book => bookService.transformBackendBook(book));
+      const backendBooks = result.data || result;
+      let filtered = backendBooks.map(book => bookService.transformBackendBook(book, avisStats));
 
       // Filtrer par disponibilité
       if (filters.availability !== null && filters.availability !== undefined) {
@@ -94,12 +110,15 @@ export const bookService = {
   // Rechercher des livres
   searchBooks: async (query) => {
     try {
-      const response = await fetch(API_ENDPOINTS.books);
+      const [response, avisStats] = await Promise.all([
+        fetch(API_ENDPOINTS.books),
+        bookService.fetchAvisStats()
+      ]);
       if (!response.ok) throw new Error('Erreur lors de la recherche');
 
       const result = await response.json();
-      const backendBooks = result.data || result; // Support both paginated and direct responses
-      const books = backendBooks.map(book => bookService.transformBackendBook(book));
+      const backendBooks = result.data || result;
+      const books = backendBooks.map(book => bookService.transformBackendBook(book, avisStats));
 
       if (!query.trim()) return books;
 
@@ -117,13 +136,16 @@ export const bookService = {
   // Récupérer un livre par ISBN
   getBook: async (isbn) => {
     try {
-      const response = await fetch(API_ENDPOINTS.books);
+      const [response, avisStats] = await Promise.all([
+        fetch(API_ENDPOINTS.books),
+        bookService.fetchAvisStats()
+      ]);
       if (!response.ok) throw new Error('Erreur lors de la récupération du livre');
 
       const result = await response.json();
-      const backendBooks = result.data || result; // Support both paginated and direct responses
+      const backendBooks = result.data || result;
       const book = backendBooks.find(b => b.isbn === isbn);
-      return book ? bookService.transformBackendBook(book) : null;
+      return book ? bookService.transformBackendBook(book, avisStats) : null;
     } catch (error) {
       console.error('Erreur getBook:', error);
       return null;

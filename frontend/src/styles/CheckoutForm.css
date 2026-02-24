@@ -10,15 +10,15 @@
 .form-section {
   padding: 24px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #f8fafc 100%);
-  border: 1px solid #e8ecf1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
 }
 
 .form-section h3 {
   margin: 0 0 20px 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text-primary);
 }
 
 .form-group {
@@ -35,17 +35,18 @@
 .form-group label {
   font-size: 0.95rem;
   font-weight: 500;
-  color: #2d3748;
+  color: var(--text-primary);
 }
 
 .form-group input {
   padding: 12px 14px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.2s ease;
   background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .form-group input:focus {
@@ -56,12 +57,12 @@
 
 .form-group input.error {
   border-color: #f56565;
-  background-color: #fff5f5;
+  background-color: var(--bg-primary);
 }
 
 .form-group input:disabled {
-  background-color: #f7fafc;
-  color: #a0aec0;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
   cursor: not-allowed;
 }
 
@@ -82,7 +83,7 @@
   padding: 12px 14px;
   border-radius: 8px;
   background: var(--bg-primary);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
 }
 
 .form-group.read-only label {
@@ -94,7 +95,7 @@
 
 .form-value {
   font-size: 1rem;
-  color: #2d3748;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -102,7 +103,7 @@
 .info-box {
   padding: 16px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #e6f3ff 0%, #f0f9ff 100%);
+  background: var(--bg-secondary);
   border-left: 4px solid var(--color-orange-dark);
   margin: 16px 0;
 }
@@ -110,7 +111,7 @@
 .info-box p {
   margin: 0;
   font-size: 0.95rem;
-  color: #2c5282;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -158,3 +159,26 @@
     font-size: 0.95rem;
   }
 }
+
+/* ── Save address checkbox ── */
+.save-address-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.save-address-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-orange-dark);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.save-address-label:hover { color: var(--text-primary); }
+

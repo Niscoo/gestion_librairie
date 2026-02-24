@@ -2,7 +2,7 @@
 
 .confirmation-page {
   min-height: calc(100vh - 120px);
-  background: linear-gradient(135deg, #f5f7fa 0%, #f8fafc 100%);
+  background: var(--bg-secondary);
   padding: 40px 20px;
 }
 

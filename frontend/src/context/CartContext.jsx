@@ -1,4 +1,6 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
+import { useUser } from './UserContext';
+import { API_BASE_URL } from '../config/api';
 
 const CartContext = createContext();
 
@@ -50,13 +52,48 @@ function cartReducer(state, action) {
 export function CartProvider({ children }) {
   const [cartItems, dispatch] = useReducer(cartReducer, undefined, initialState);
 
+  const { user, isConnected } = useUser();
+
   useEffect(() => {
     try {
       localStorage.setItem('cart_items', JSON.stringify(cartItems));
     } catch (e) {
       console.error('Failed to save cart to localStorage', e);
     }
-  }, [cartItems]);
+    // when user is connected, persist cart to backend
+    const persist = async () => {
+      if (!isConnected || !user?.id) return;
+      try {
+        await fetch(`${API_BASE_URL}/api/panier`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: user.id, items: cartItems.map(it=>({ isbn: it.id, titre: it.title || it.titre, format: it.format, quantity: it.quantity, prix_unitaire: it.price })) })
+        });
+      } catch (e) {
+        console.error('Failed to persist cart to backend', e);
+      }
+    };
+    persist();
+  }, [cartItems, isConnected, user]);
+
+  // on user connect, load cart from backend
+  useEffect(() => {
+    const load = async () => {
+      if (!isConnected || !user?.id) return;
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/panier?user_id=${user.id}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data.items) && data.items.length > 0) {
+          dispatch({ type: 'CLEAR' });
+          data.items.forEach(it => dispatch({ type: 'ADD', payload: { id: it.isbn, title: it.titre, format: it.format, quantity: it.quantity, price: it.prix_unitaire } }));
+        }
+      } catch (e) {
+        console.error('Failed to load cart from backend', e);
+      }
+    };
+    load();
+  }, [isConnected, user]);
 
   const addToCart = (book) => {
     dispatch({ type: 'ADD', payload: book });

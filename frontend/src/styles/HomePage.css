@@ -1,0 +1,53 @@
+.home-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.social-proof {
+  margin: 4rem 0 2rem;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--bg-primary);
+}
+
+.social-proof h2 {
+  margin: 0 0 1.4rem;
+  font-size: 1.6rem;
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.testimonial-card {
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.testimonial-card p {
+  margin: 0 0 0.6rem;
+}
+
+.testimonial-card span {
+  color: var(--color-orange-dark);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .social-proof {
+    padding: 1.2rem;
+  }
+}

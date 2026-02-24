@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import '../styles/Cart.css';
@@ -7,29 +7,59 @@ function Cart() {
   const navigate = useNavigate();
   const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
   const [isOpen, setIsOpen] = useState(false);
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    if (isOpen) {
+      closeButtonRef.current?.focus();
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   return (
     <div className="cart-wrapper">
-      {/* Icône panier dans la navbar */}
+      {/* Bouton flottant panier en bas à droite */}
       <button 
-        className="cart-icon-btn"
+        className="cart-fab"
         onClick={() => setIsOpen(!isOpen)}
         title="Panier"
+        aria-haspopup="dialog"
+        aria-expanded={isOpen}
+        aria-controls="cart-panel"
+        aria-label="Ouvrir le panier"
       >
-        🛒
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
         {cartItems.length > 0 && (
-          <span className="cart-badge">{cartItems.length}</span>
+          <span className="cart-fab-badge">{cartItems.length}</span>
         )}
       </button>
 
       {/* Panel panier */}
       {isOpen && (
-        <div className="cart-panel">
+        <div id="cart-panel" className="cart-panel" role="dialog" aria-modal="true" aria-label="Panier">
           <div className="cart-header">
             <h2>🛒 Panier</h2>
             <button 
               className="close-btn"
+              ref={closeButtonRef}
               onClick={() => setIsOpen(false)}
+              aria-label="Fermer le panier"
             >
               ✕
             </button>
@@ -55,32 +85,35 @@ function Cart() {
                     </div>
 
                     <div className="item-quantity">
-                      <button 
-                        onClick={() => updateQuantity(item.id, item.format, item.quantity - 1)}
-                        className="qty-btn"
-                      >
-                        −
-                      </button>
+                        <button 
+                          onClick={() => updateQuantity(item.id, item.format, item.quantity - 1)}
+                          className="qty-btn"
+                          aria-label={`Réduire la quantité de ${item.title}`}
+                        >
+                          −
+                        </button>
                       <span className="qty-value">{item.quantity}</span>
-                      <button 
-                        onClick={() => updateQuantity(item.id, item.format, item.quantity + 1)}
-                        className="qty-btn"
-                      >
-                        +
-                      </button>
+                        <button 
+                          onClick={() => updateQuantity(item.id, item.format, item.quantity + 1)}
+                          className="qty-btn"
+                          aria-label={`Augmenter la quantité de ${item.title}`}
+                        >
+                          +
+                        </button>
                     </div>
 
                     <div className="item-subtotal">
                       {((item.price ?? 0) * item.quantity).toFixed(2)}€
                     </div>
 
-                    <button 
-                      className="remove-btn"
-                      onClick={() => removeFromCart(item.id, item.format)}
-                      title="Supprimer"
-                    >
-                      🗑️
-                    </button>
+                      <button 
+                        className="remove-btn"
+                        onClick={() => removeFromCart(item.id, item.format)}
+                        title="Supprimer"
+                        aria-label={`Supprimer ${item.title} du panier`}
+                      >
+                        🗑️
+                      </button>
                   </div>
                 ))}
               </div>
@@ -122,8 +155,9 @@ function Cart() {
 
       {/* Overlay */}
       {isOpen && (
-        <div 
+        <button
           className="cart-overlay"
+          aria-label="Fermer le panier"
           onClick={() => setIsOpen(false)}
         />
       )}

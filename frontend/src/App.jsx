@@ -13,6 +13,7 @@ import { CartProvider } from './context/CartContext'
 import { ToastProvider } from './context/ToastContext'
 import { UserProvider } from './context/UserContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { FavoritesProvider } from './context/FavoritesContext'
 
 import AppContent from './AppContent'
 
@@ -20,11 +21,13 @@ function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <CartProvider>
-          <UserProvider>
-            <AppContent />
-          </UserProvider>
-        </CartProvider>
+        <UserProvider>
+          <CartProvider>
+            <FavoritesProvider>
+              <AppContent />
+            </FavoritesProvider>
+          </CartProvider>
+        </UserProvider>
       </ToastProvider>
     </ThemeProvider>
   )

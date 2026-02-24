@@ -1,210 +1,167 @@
-import { useState, useEffect } from 'react';
 import '../styles/FilterPanel.css';
 
+const FORMAT_OPTIONS = [
+  { value: 'ebook',           label: 'E-book'   },
+  { value: 'papier-neuf',     label: 'Neuf'     },
+  { value: 'papier-occasion', label: 'Occasion' },
+];
+
+const CATEGORIES = [
+  'Fantasy',
+  'Science-Fiction',
+  'Dystopie',
+  'Classique',
+  'Non-Fiction',
+  'Développement Personnel',
+  'Informatique',
+  'Contes',
+];
+
 function FilterPanel({ onFilterChange, onReset, filters: parentFilters, priceBounds = [0, 100] }) {
-  const [filters, setFilters] = useState(parentFilters || {
+  const filters = parentFilters || {
     format: [],
     availability: null,
     category: [],
-    priceRange: parentFilters && parentFilters.priceRange ? parentFilters.priceRange : priceBounds
-  });
-
-  // Sync local filters when parentFilters or priceBounds change
-  useEffect(() => {
-    if (parentFilters) {
-      setFilters(parentFilters);
-    } else {
-      setFilters({
-        format: [],
-        availability: null,
-        category: [],
-        priceRange: priceBounds
-      });
-    }
-  }, [parentFilters, priceBounds]);
-
-  const [expanded, setExpanded] = useState({
-    format: true,
-    availability: true,
-    category: true,
-    price: true
-  });
-
-  const formats = [
-    { value: 'ebook', label: 'E-book' },
-    { value: 'papier-neuf', label: 'Livre Neuf' },
-    { value: 'papier-occasion', label: 'Livre d\'Occasion' }
-  ];
-  const categories = ['Fantasy', 'Science-Fiction', 'Dystopie', 'Classique', 'Non-Fiction', 'Développement Personnel', 'Informatique', 'Contes'];
-
-  const toggleFormat = (format) => {
-    const newFormats = filters.format.includes(format)
-      ? filters.format.filter(f => f !== format)
-      : [...filters.format, format];
-    
-    const newFilters = { ...filters, format: newFormats };
-    setFilters(newFilters);
-    onFilterChange(newFilters);
+    priceRange: priceBounds,
   };
 
-  const toggleCategory = (category) => {
-    const newCategories = filters.category.includes(category)
-      ? filters.category.filter(c => c !== category)
-      : [...filters.category, category];
-    
-    const newFilters = { ...filters, category: newCategories };
-    setFilters(newFilters);
-    onFilterChange(newFilters);
+  const activeCount =
+    filters.format.length +
+    (filters.availability !== null ? 1 : 0) +
+    filters.category.length +
+    (filters.priceRange[1] < priceBounds[1] ? 1 : 0);
+
+  const toggleFormat = (value) => {
+    const next = filters.format.includes(value)
+      ? filters.format.filter(f => f !== value)
+      : [...filters.format, value];
+    onFilterChange({ ...filters, format: next });
   };
 
-  const toggleAvailability = (available) => {
-    const newFilters = { ...filters, availability: filters.availability === available ? null : available };
-    setFilters(newFilters);
-    onFilterChange(newFilters);
+  const toggleCategory = (value) => {
+    const next = filters.category.includes(value)
+      ? filters.category.filter(c => c !== value)
+      : [...filters.category, value];
+    onFilterChange({ ...filters, category: next });
+  };
+
+  const setAvailability = (value) => {
+    onFilterChange({ ...filters, availability: filters.availability === value ? null : value });
   };
 
   const handlePriceChange = (e) => {
-    const newFilters = {
-      ...filters,
-      priceRange: [filters.priceRange[0], parseFloat(e.target.value)]
-    };
-    setFilters(newFilters);
-    onFilterChange(newFilters);
+    onFilterChange({ ...filters, priceRange: [filters.priceRange[0], parseFloat(e.target.value)] });
   };
 
   const handleReset = () => {
-    const resetFilters = {
-      format: [],
-      availability: null,
-      category: [],
-      priceRange: priceBounds
-    };
-    setFilters(resetFilters);
-    onFilterChange(resetFilters);
+    onFilterChange({ format: [], availability: null, category: [], priceRange: priceBounds });
     onReset();
   };
 
-  const hasActiveFilters = filters.format.length > 0 || filters.availability !== null || filters.category.length > 0 || filters.priceRange[1] < priceBounds[1];
+  const priceFillPct =
+    priceBounds[1] > priceBounds[0]
+      ? ((filters.priceRange[1] - priceBounds[0]) / (priceBounds[1] - priceBounds[0])) * 100
+      : 100;
 
   return (
-    <div className="filter-panel">
-      <div className="filter-header">
-        <h3>Filtres</h3>
-        {hasActiveFilters && (
-          <button className="reset-btn" onClick={handleReset}>
-            Réinitialiser
+    <aside className="filter-panel" aria-label="Filtres">
+
+      {/* ── Header ── */}
+      <div className="fp-header">
+        <span className="fp-title">
+          Filtres
+          {activeCount > 0 && <span className="fp-badge">{activeCount}</span>}
+        </span>
+        {activeCount > 0 && (
+          <button className="fp-reset" onClick={handleReset} aria-label="Réinitialiser tous les filtres">
+            Tout effacer
           </button>
         )}
       </div>
 
-      {/* Formats */}
-      <div className="filter-section">
-        <button
-          className="filter-title"
-          onClick={() => setExpanded({ ...expanded, format: !expanded.format })}
-        >
-          Format
-          <span className="toggle-icon">{expanded.format ? '▼' : '▶'}</span>
-        </button>
-        {expanded.format && (
-          <div className="filter-options">
-            {formats.map(format => (
-              <label key={format.value} className="filter-checkbox">
-                <input
-                  type="checkbox"
-                  checked={filters.format.includes(format.value)}
-                  onChange={() => toggleFormat(format.value)}
-                />
-                <span>{format.label}</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* ── Format ── */}
+      <section className="fp-section">
+        <p className="fp-label">Format</p>
+        <div className="fp-format-grid">
+          {FORMAT_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              className={`fp-format-btn ${filters.format.includes(opt.value) ? 'active' : ''}`}
+              onClick={() => toggleFormat(opt.value)}
+              aria-pressed={filters.format.includes(opt.value)}
+            >
+              <span className="fp-format-label">{opt.label}</span>
+            </button>
+          ))}
+        </div>
+      </section>
 
-      {/* Disponibilité */}
-      <div className="filter-section">
-        <button
-          className="filter-title"
-          onClick={() => setExpanded({ ...expanded, availability: !expanded.availability })}
-        >
-          Disponibilité
-          <span className="toggle-icon">{expanded.availability ? '▼' : '▶'}</span>
-        </button>
-        {expanded.availability && (
-          <div className="filter-options">
-            <label className="filter-checkbox">
-              <input
-                type="checkbox"
-                checked={filters.availability === true}
-                onChange={() => toggleAvailability(true)}
-              />
-              <span>En stock</span>
-            </label>
-            <label className="filter-checkbox">
-              <input
-                type="checkbox"
-                checked={filters.availability === false}
-                onChange={() => toggleAvailability(false)}
-              />
-              <span>Rupture</span>
-            </label>
-          </div>
-        )}
-      </div>
+      {/* ── Disponibilité ── */}
+      <section className="fp-section">
+        <p className="fp-label">Disponibilité</p>
+        <div className="fp-avail-row">
+          <button
+            className={`fp-avail-btn ${filters.availability === true ? 'active' : ''}`}
+            onClick={() => setAvailability(true)}
+            aria-pressed={filters.availability === true}
+          >
+            <span className="fp-avail-dot in-stock" />
+            En stock
+          </button>
+          <button
+            className={`fp-avail-btn ${filters.availability === false ? 'active' : ''}`}
+            onClick={() => setAvailability(false)}
+            aria-pressed={filters.availability === false}
+          >
+            <span className="fp-avail-dot out-stock" />
+            Rupture
+          </button>
+        </div>
+      </section>
 
-      {/* Catégories */}
-      <div className="filter-section">
-        <button
-          className="filter-title"
-          onClick={() => setExpanded({ ...expanded, category: !expanded.category })}
-        >
-          Catégories
-          <span className="toggle-icon">{expanded.category ? '▼' : '▶'}</span>
-        </button>
-        {expanded.category && (
-          <div className="filter-options">
-            {categories.map(category => (
-              <label key={category} className="filter-checkbox">
-                <input
-                  type="checkbox"
-                  checked={filters.category.includes(category)}
-                  onChange={() => toggleCategory(category)}
-                />
-                <span>{category}</span>
-              </label>
-            ))}
+      {/* ── Prix ── */}
+      <section className="fp-section">
+        <div className="fp-price-header">
+          <p className="fp-label" style={{ margin: 0 }}>Prix max</p>
+          <span className="fp-price-value">{filters.priceRange[1].toFixed(0)} €</span>
+        </div>
+        <div className="fp-slider-wrap">
+          <input
+            type="range"
+            min={priceBounds[0]}
+            max={priceBounds[1]}
+            step="1"
+            value={filters.priceRange[1]}
+            onChange={handlePriceChange}
+            className="fp-slider"
+            aria-label="Prix maximum"
+            style={{ '--fill': `${priceFillPct}%` }}
+          />
+          <div className="fp-slider-bounds">
+            <span>{priceBounds[0]} €</span>
+            <span>{priceBounds[1]} €</span>
           </div>
-        )}
-      </div>
+        </div>
+      </section>
 
-      {/* Prix */}
-      <div className="filter-section">
-        <button
-          className="filter-title"
-          onClick={() => setExpanded({ ...expanded, price: !expanded.price })}
-        >
-          Prix
-          <span className="toggle-icon">{expanded.price ? '▼' : '▶'}</span>
-        </button>
-        {expanded.price && (
-          <div className="price-filter">
-            <div className="price-range">
-              <span>{priceBounds[0]}€</span>
-              <span>{filters.priceRange[1]}€</span>
-            </div>
-            <input
-              type="range"
-              min={priceBounds[0]}
-              max={priceBounds[1]}
-              value={filters.priceRange[1]}
-              onChange={handlePriceChange}
-              className="price-slider"
-            />
-          </div>
-        )}
-      </div>
-    </div>
+      {/* ── Catégories ── */}
+      <section className="fp-section fp-section--last">
+        <p className="fp-label">Catégories</p>
+        <div className="fp-categories">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              className={`fp-cat-btn ${filters.category.includes(cat) ? 'active' : ''}`}
+              onClick={() => toggleCategory(cat)}
+              aria-pressed={filters.category.includes(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </section>
+
+    </aside>
   );
 }
 

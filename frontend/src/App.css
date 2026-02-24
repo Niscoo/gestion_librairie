@@ -12,11 +12,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
+  gap: 1rem;
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.navbar-brand {
+  text-decoration: none;
 }
 
 .navbar h1 {
@@ -27,35 +30,68 @@
   letter-spacing: -0.5px;
 }
 
+.mobile-menu-btn {
+  display: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.1);
+  color: white;
+  font-size: 1.2rem;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
+
+.mobile-menu-btn:focus-visible,
+.theme-toggle:focus-visible,
+.nav-links a:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  flex: 1;
+}
+
 .nav-links {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   gap: 1.5rem;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
 .nav-links a {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   text-decoration: none;
   font-size: 1rem;
-  padding: 0.6rem 1.2rem;
+  padding: 0.5rem 0.8rem;
   border-radius: 8px;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   font-weight: 500;
   position: relative;
 }
 
-.nav-links a::after {
+.nav-links a.active {
+  background-color: rgba(255, 255, 255, 0.18);
+  font-weight: 700;
+}
+
+.nav-links a::before {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
   height: 2px;
   background: white;
-  transition: width 0.3s ease;
+  transition: width 0.25s ease;
 }
 
 .nav-links a:hover {
@@ -63,8 +99,9 @@
   color: white;
 }
 
-.nav-links a:hover::after {
-  width: 100%;
+.nav-links a:hover::before,
+.nav-links a.active::before {
+  width: 65%;
 }
 
 .nav-actions {
@@ -76,12 +113,12 @@
 .theme-toggle {
   background: rgba(255, 255, 255, 0.2);
   color: white;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.45);
   padding: 0.5rem 0.75rem;
   font-size: 1.3rem;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,6 +127,106 @@
 .theme-toggle:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.1);
+}
+
+.desktop-cart {
+  display: block;
+}
+
+/* ── Auth buttons in navbar ── */
+.btn-login {
+  padding: 0.45rem 0.9rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.btn-login:hover { background: rgba(255, 255, 255, 0.28); }
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.nav-user-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: white;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-logout {
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.btn-logout:hover { color: white; border-color: rgba(255, 255, 255, 0.6); }
+
+/* Favorites badge in nav */
+.nav-fav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-orange-dark);
+  color: white;
+  border-radius: 999px;
+  min-width: 18px;
+  height: 18px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0 4px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* ── Profile avatar button ── */
+.nav-profile-wrap {
+  position: relative;
+}
+
+.btn-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: var(--color-orange-dark);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  flex-shrink: 0;
+}
+
+.btn-avatar:hover {
+  border-color: white;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+}
+.nav-backdrop {
+  display: none;
 }
 
 .main-content {
@@ -105,27 +242,80 @@
   height: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .navbar {
-    padding: 0.6rem 1rem;
-    gap: 1rem;
+    padding: 0.8rem 1rem;
   }
 
   .navbar h1 {
-    font-size: 1.4em;
+    font-size: 1.2rem;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+    z-index: 1001;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    transform: translateX(100%);
+    width: min(82vw, 320px);
+    height: 100vh;
+    background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange-light) 100%);
+    flex-direction: column;
+    padding: 4.5rem 1.2rem 1.2rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+    justify-content: space-between;
+    gap: 2rem;
+    z-index: 1000;
+  }
+
+  .nav-menu.open {
+    transform: translateX(0);
   }
 
   .nav-links {
-    gap: 0.5rem;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 1rem;
   }
 
   .nav-links a {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
+    display: block;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .nav-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.8rem;
+    margin-top: 0;
+  }
+
+  .desktop-cart {
+    display: none;
+  }
+
+  .theme-toggle {
+    width: 100%;
+  }
+
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    border: none;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 999;
   }
 
   .main-content {
     padding: 1.5rem;
   }
 }
-
