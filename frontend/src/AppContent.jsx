@@ -158,7 +158,6 @@ function AppShell() {
           <Route path="/product/:id" element={<ProductDetailsPage />} />
           <Route path="/order-confirmation/:orderId" element={<OrderConfirmationPage />} />
           <Route path="/admin" element={<AdminPage />} />
-          <Route path="/liseuse/:bookId" element={<EbookLiseuse />} />
         </Routes>
       </main>
 
@@ -170,7 +169,12 @@ function AppShell() {
 function AppContent() {
   return (
     <Router>
-      <AppShell />
+      <Routes>
+        {/* Liseuse: full-screen, no navbar/cart */}
+        <Route path="/liseuse/:bookId" element={<EbookLiseuse />} />
+        {/* All other pages wrapped in AppShell */}
+        <Route path="/*" element={<AppShell />} />
+      </Routes>
     </Router>
   )
 }
