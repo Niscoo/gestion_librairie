@@ -185,3 +185,36 @@ class Avis(db.Model):
 
     def __repr__(self):
         return f'<Avis user={self.idUser} isbn={self.isbn} note={self.note}>'
+
+
+# Modèle Note / Annotation ebook
+class Note(db.Model):
+    __tablename__ = 'note'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('utilisateur.idUser'), nullable=True, index=True)
+    book_id = db.Column(db.String(20), nullable=False, index=True)
+    cfi_range = db.Column(db.Text, nullable=False)
+    highlighted_text = db.Column(db.Text)
+    content = db.Column(db.Text, default='')
+    color = db.Column(db.String(50), default='rgba(255,220,0,0.45)')
+    is_private = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    utilisateur = db.relationship('Utilisateur', backref='notes', lazy=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'book_id': self.book_id,
+            'cfi_range': self.cfi_range,
+            'highlighted_text': self.highlighted_text,
+            'content': self.content,
+            'color': self.color,
+            'is_private': self.is_private,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+    def __repr__(self):
+        return f'<Note user={self.user_id} book={self.book_id}>'

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, current_app
-from models import db, Ouvrage, Auteur, Utilisateur, Commande, CommandeItem, Favori, Avis
+from models import db, Ouvrage, Auteur, Utilisateur, Commande, CommandeItem, Favori, Avis, Note
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -1299,6 +1299,98 @@ def admin_delete_avis(id):
         db.session.delete(avis)
         db.session.commit()
         return jsonify({"message": "Avis supprimé"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Erreur: {str(e)}"}), 500
+
+
+# ── NOTES / ANNOTATIONS EBOOK ────────────────────────────────────────────────
+
+@api.route('/notes', methods=['POST'])
+def create_note():
+    """Créer une note ou un surlignage pour un ebook."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Données manquantes"}), 400
+
+        book_id = data.get('book_id')
+        cfi_range = data.get('cfi_range')
+        if not book_id or not cfi_range:
+            return jsonify({"error": "book_id et cfi_range sont requis"}), 400
+
+        user_id = data.get('user_id')
+        # Validate user if provided
+        if user_id:
+            user = Utilisateur.query.get(user_id)
+            if not user:
+                user_id = None
+
+        note = Note(
+            user_id=user_id,
+            book_id=str(book_id),
+            cfi_range=cfi_range,
+            highlighted_text=data.get('highlighted_text', ''),
+            content=data.get('content', ''),
+            color=data.get('color', 'rgba(255,220,0,0.45)'),
+            is_private=data.get('is_private', True),
+        )
+        db.session.add(note)
+        db.session.commit()
+        return jsonify({"note": note.to_dict()}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Erreur: {str(e)}"}), 500
+
+
+@api.route('/notes/<string:book_id>', methods=['GET'])
+def get_notes(book_id):
+    """
+    Récupère les notes d'un livre :
+    - toutes les notes publiques
+    - les notes privées appartenant à l'utilisateur connecté (user_id en query param)
+    """
+    try:
+        user_id = request.args.get('user_id', type=int)
+
+        # Public notes for this book
+        public_notes = Note.query.filter_by(book_id=str(book_id), is_private=False).all()
+
+        # Private notes belonging to the current user
+        private_notes = []
+        if user_id:
+            private_notes = Note.query.filter_by(
+                book_id=str(book_id),
+                user_id=user_id,
+                is_private=True,
+            ).all()
+
+        # Merge, deduplicate by id
+        seen = set()
+        result = []
+        for n in public_notes + private_notes:
+            if n.id not in seen:
+                seen.add(n.id)
+                result.append(n.to_dict())
+
+        return jsonify({"notes": result, "total": len(result)}), 200
+    except Exception as e:
+        return jsonify({"error": f"Erreur: {str(e)}"}), 500
+
+
+@api.route('/notes/<int:note_id>', methods=['DELETE'])
+def delete_note(note_id):
+    """Supprimer une note (uniquement par son auteur)."""
+    try:
+        user_id = request.args.get('user_id', type=int)
+        note = Note.query.get(note_id)
+        if not note:
+            return jsonify({"error": "Note introuvable"}), 404
+        if note.user_id != user_id:
+            return jsonify({"error": "Non autorisé"}), 403
+        db.session.delete(note)
+        db.session.commit()
+        return jsonify({"message": "Note supprimée"}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Erreur: {str(e)}"}), 500

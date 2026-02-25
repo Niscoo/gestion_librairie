@@ -14,6 +14,7 @@ import ProfilePage from './pages/profile_page'
 import OrdersPage from './pages/orders_page'
 import OrderDetailPage from './pages/order_detail_page'
 import AdminPage from './pages/admin_page'
+import EbookLiseuse from './pages/ebook_liseuse'
 import Cart from './components/Cart'
 import AuthModal from './components/AuthModal'
 import ProfileDropdown from './components/ProfileDropdown'
@@ -157,6 +158,7 @@ function AppShell() {
           <Route path="/product/:id" element={<ProductDetailsPage />} />
           <Route path="/order-confirmation/:orderId" element={<OrderConfirmationPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/liseuse/:bookId" element={<EbookLiseuse />} />
         </Routes>
       </main>
 
